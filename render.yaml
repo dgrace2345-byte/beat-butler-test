@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: beat-butler-worker-7h2q
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./services/analyze/Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: BUTLER_API_KEY
+        value: 12591c702fe8ae485097ee2f9c5fb31135e4214adebb4c8f
+      - key: BUTLER_CORS_ORIGINS
+        value: https://dgrace2345-byte.github.io
+      - key: MAX_UPLOAD_MB
+        value: "200"
+      - key: LLM_API_KEY
+        value: ""
+      - key: LLM_MODEL
+        value: template-draft
+      - key: LLM_BASE_URL
+        value: https://api.openai.com/v1
