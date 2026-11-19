@@ -23,6 +23,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, File, Form, Header, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from starlette.concurrency import run_in_threadpool
 
 from . import billing, dsp, generate, ratelimit
 
@@ -331,7 +332,10 @@ async def analyze_upload(
                 out.write(chunk)
         if written == 0:
             raise HTTPException(status_code=400, detail="The file was empty.")
-        result = analyse_to_response(beat, path)
+        # librosa is CPU-bound and can hold the loop for seconds. On a host with
+        # a hard 5s health-check timeout that looks like a dead worker and gets
+        # the instance killed. Run it off-loop so /health stays answerable.
+        result = await run_in_threadpool(analyse_to_response, beat, path)
         if token:
             _charge_plan(token)
         return result
