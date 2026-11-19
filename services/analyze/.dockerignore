@@ -1,0 +1,15 @@
+# The build context is services/analyze, so these are the only paths that matter.
+# .env holds the service key and the Stripe secret - it must never land in a layer.
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.log
+.DS_Store
+Thumbs.db
